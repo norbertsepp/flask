@@ -4,4 +4,9 @@ main = Blueprint("main", __name__)
 
 @main.route('/')
 def index():
-    return "Hello world"
+    return "Hello, world!"
+
+@main.route('/profile')
+def profile():
+    return "Profile here"
+    
