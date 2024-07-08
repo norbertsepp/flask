@@ -9,9 +9,9 @@ except ConnectionError:
 
 SQL_STM = """
 CREATE TABLE IF NOT EXISTS USER
-         (ID INT PRIMARY KEY     NOT NULL,
+         (ID INTEGER PRIMARY KEY     NOT NULL,
          EMAIL      CHAR(100)    UNIQUE NOT NULL,
-         PASSWORD   CHAR(50)     NOT NULL,
+         PASSWORD   CHAR(200)     NOT NULL,
          NAME       CHAR(100)
          );
 """
