@@ -1,0 +1,26 @@
+body {
+    background-color:bisque;
+    margin: 0 10em;
+}
+
+th,
+td {
+    background-color:aquamarine;
+    padding:20px;
+    border: solid 2px black;
+    margin: 1em;
+    font-size:1.5em;
+}
+
+nav a {
+    color: whitesmoke;
+    background-color:brown;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    padding: 10px;
+    margin: auto;
+    width: 140px;
+    border: 1px solid black;
+    border-radius: 10px;
+}

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, request, redirect
+from flask import Blueprint, render_template, url_for, request, redirect, check_password_hash
 from werkzeug.security import generate_password_hash
 from .models import User
 from . import db
@@ -25,25 +25,23 @@ def signup_post():
     name = request.form.get("name")
     email = request.form.get("email")
     password = request.form.get("password")
-    
-    password_hashed = generate_password_hash(password)
+    password_hashed = generate_password_hash(password, method='sha256')
     
     conn = db_conn()
-    print(conn)
+
     cursor = conn.cursor()
-    print(cursor)
+
     cursor.execute(f'SELECT name, email from USER where email="{email}";')
     
-    l = cursor.fetchall()
-    print(l)
-    if len(l) > 0:
+    users = cursor.fetchall()
+  
+    if len(users) > 0:
         print(f"User with email {email} already exists!")
-        print(l)
+        return redirect(url_for('auth.signup')) 
         
     else:
         statement = "INSERT INTO USER (email, password, name) VALUES(" 
         statement += f'"{email}", "{password_hashed}", "{name}");'
-        print("SQL:-> ", statement)
         cursor.execute(statement)
         conn.commit()
         print(f"User successfully added: {name}, {email}, {password_hashed}")
@@ -59,12 +57,22 @@ def login():
 
 @auth.route('/login', methods=['POST'])
 def login_post():
-
     email = request.form.get("email")
     password = request.form.get("password")
+    remember = True if request.form.get('remember') else False
+    password_hashed = generate_password_hash(password, method='sha256')
     
-    print(email, password)
-    
+    conn = db_conn()
+    cursor = conn.cursor()
+    cursor.execute(f'SELECT name, email, password from USER where email="{email}";')
+    users = cursor.fetchall()
+    if len(users) <= 0:
+        print("User does not exist")
+        return redirect(url_for('auth.login'))
+    if not check_password_hash(users[1], password):
+        print('Authentication error')
+        return redirect(url_for('auth.login'))
+        
     return redirect(url_for('main.profile'))
 
 @auth.route('/logout')
