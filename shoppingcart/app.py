@@ -29,6 +29,9 @@ def cart():
     # POST
     if request.method == "POST":
         book_id = request.form.get("id")
+        emp = request.form.get("empty")
+        if emp == "empty":
+            session["cart"].clear()
         if book_id:
             session["cart"].append(book_id)
         return redirect("/cart")
@@ -36,10 +39,13 @@ def cart():
     # GET
     cart_list = session["cart"]
 
+    books = []
+    
     if len(cart_list) > 0:
         qm = '?' + ',?' * (len(cart_list) - 1)
-    books_c = cursor.execute(f"SELECT * FROM books WHERE id IN ({qm});", cart_list)
-    books = books_c.fetchall()
+        books_c = cursor.execute(f"SELECT * FROM books WHERE id IN ({qm});", cart_list)
+        books = books_c.fetchall()
+        
     return render_template("cart.html", books=books)
     
     
